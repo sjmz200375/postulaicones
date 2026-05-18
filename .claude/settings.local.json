@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn compile *)",
+      "PowerShell(cd \"c:\\\\proyectos\\\\leguanje de programacion 3\\\\demo2\"; $result = mvn compile 2>&1; $exitCode = $LASTEXITCODE; $result | Select-String -Pattern \"BUILD|ERROR|error:\" | Select-Object -First 30; \"Exit: $exitCode\")",
+      "PowerShell(cd \"c:\\\\proyectos\\\\leguanje de programacion 3\\\\demo2\"; $r = mvn compile 2>&1; $e = $LASTEXITCODE; $r | Select-String -Pattern \"BUILD|ERROR\" | Select-Object -First 10; \"Exit: $e\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\proyectos\\\\leguanje de programacion 3\\\\demo2\" -Recurse -Include *.java, *.properties, *.yml)",
+      "Bash(Select-Object FullName)",
+      "PowerShell(Test-Path \"c:\\\\proyectos\\\\leguanje de programacion 3\\\\demo2\\\\src\"; \\(Get-Item \"c:\\\\proyectos\\\\leguanje de programacion 3\\\\demo2\\\\src\" -ErrorAction SilentlyContinue\\).FullName)"
+    ]
+  }
+}

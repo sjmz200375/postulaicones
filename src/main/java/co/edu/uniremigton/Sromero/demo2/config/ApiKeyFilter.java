@@ -60,6 +60,8 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         if ("POST".equalsIgnoreCase(method) && "/api/usuarios/login".equals(path)) return true;
         if (path.startsWith("/swagger-ui/") || path.equals("/swagger-ui.html")) return true;
         if (path.startsWith("/v3/api-docs/") || path.equals("/v3/api-docs")) return true;
+        if ("GET".equalsIgnoreCase(method) && path.startsWith("/api/catalogos/")) return true;
+        if ("GET".equalsIgnoreCase(method) && path.startsWith("/api/ubicaciones/")) return true;
         return false;
     }
 }

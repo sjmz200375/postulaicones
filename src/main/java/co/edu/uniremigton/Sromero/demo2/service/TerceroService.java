@@ -54,6 +54,10 @@ public class TerceroService {
         t.setTercMovil(datos.getTercMovil());
         t.setTercTipo(datos.getTercTipo());
         t.setTercEmail(datos.getTercEmail());
+        t.setDepartamentoId(datos.getDepartamentoId());
+        t.setDepartamentoNombre(datos.getDepartamentoNombre());
+        t.setMunicipioId(datos.getMunicipioId());
+        t.setMunicipioNombre(datos.getMunicipioNombre());
         return repo.save(t);
     }
 

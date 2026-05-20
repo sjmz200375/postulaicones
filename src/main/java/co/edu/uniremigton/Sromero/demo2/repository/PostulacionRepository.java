@@ -33,7 +33,6 @@ public interface PostulacionRepository extends JpaRepository<Postulacion, Long> 
     @Query("SELECT COUNT(p) FROM Postulacion p WHERE p.tipoPostulacion = :tipo")
     long countByTipo(@Param("tipo") TipoPostulacion tipo);
 
-    // Paginados
     Page<Postulacion> findAllByOrderByFechaCreacionDesc(Pageable pageable);
     Page<Postulacion> findByEstadoOrderByFechaCreacionDesc(EstadoPostulacion estado, Pageable pageable);
     Page<Postulacion> findByTipoPostulacionOrderByFechaCreacionDesc(TipoPostulacion tipo, Pageable pageable);

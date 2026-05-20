@@ -19,7 +19,6 @@ public interface TerceroRepository extends JpaRepository<Tercero, Long> {
     List<Tercero> findByTercTipoOrderByTercApellidosAsc(String tercTipo);
     List<Tercero> findByTercTipo(String tercTipo);
 
-    // Paginados
     Page<Tercero> findAllByOrderByTercApellidosAsc(Pageable pageable);
     Page<Tercero> findByTercTipoOrderByTercApellidosAsc(String tercTipo, Pageable pageable);
 

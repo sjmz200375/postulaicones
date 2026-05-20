@@ -4,7 +4,10 @@ import co.edu.uniremigton.Sromero.demo2.model.EstadoPostulacion;
 import co.edu.uniremigton.Sromero.demo2.model.Postulacion;
 import co.edu.uniremigton.Sromero.demo2.model.Tercero;
 import co.edu.uniremigton.Sromero.demo2.model.TipoPostulacion;
+import co.edu.uniremigton.Sromero.demo2.repository.AreaDepartamentoRepository;
+import co.edu.uniremigton.Sromero.demo2.repository.CargoRepository;
 import co.edu.uniremigton.Sromero.demo2.repository.PostulacionRepository;
+import co.edu.uniremigton.Sromero.demo2.repository.ProgramaAcademicoRepository;
 import co.edu.uniremigton.Sromero.demo2.repository.TerceroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,9 @@ public class PostulacionService {
     private final PostulacionRepository repo;
     private final TerceroRepository terceroRepo;
     private final HistorialService historialService;
+    private final ProgramaAcademicoRepository programaRepo;
+    private final AreaDepartamentoRepository areaRepo;
+    private final CargoRepository cargoRepo;
 
     public List<Postulacion> listar() {
         return repo.findAll(Sort.by(Sort.Direction.DESC, "fechaCreacion"));
@@ -68,14 +74,52 @@ public class PostulacionService {
         return repo.buscarPaginado(texto, PageRequest.of(page, size));
     }
 
+    @Transactional
     public Postulacion crear(Postulacion p) {
         p.setId(null);
         p.setTercId(null);
         p.setEstado(EstadoPostulacion.PENDIENTE);
 
+        switch (p.getTipoPostulacion()) {
+            case ESTUDIANTE -> {
+                if (p.getProgramaAcademicoId() == null) {
+                    throw new RuntimeException(
+                        "Debe seleccionar un programa académico para postularse como Estudiante");
+                }
+                if (!programaRepo.existsById(p.getProgramaAcademicoId())) {
+                    throw new RuntimeException("El programa académico seleccionado no existe");
+                }
+                p.setAreaDepartamentoId(null);
+                p.setCargoId(null);
+            }
+            case PROFESOR -> {
+                if (p.getAreaDepartamentoId() == null) {
+                    throw new RuntimeException(
+                        "Debe seleccionar un área o departamento para postularse como Profesor");
+                }
+                if (!areaRepo.existsById(p.getAreaDepartamentoId())) {
+                    throw new RuntimeException("El área o departamento seleccionado no existe");
+                }
+                p.setProgramaAcademicoId(null);
+                p.setCargoId(null);
+            }
+            case ADMINISTRATIVO -> {
+                if (p.getCargoId() == null) {
+                    throw new RuntimeException(
+                        "Debe seleccionar un cargo para postularse como Administrativo");
+                }
+                if (!cargoRepo.existsById(p.getCargoId())) {
+                    throw new RuntimeException("El cargo seleccionado no existe");
+                }
+                p.setProgramaAcademicoId(null);
+                p.setAreaDepartamentoId(null);
+            }
+        }
+
         repo.findByNroDocAndTipoPostulacion(p.getNroDoc(), p.getTipoPostulacion())
             .ifPresent(existing -> {
-                throw new RuntimeException("Ya existe una postulación con ese documento para el tipo seleccionado");
+                throw new RuntimeException(
+                    "Ya existe una postulación con ese documento para el tipo seleccionado");
             });
 
         return repo.save(p);

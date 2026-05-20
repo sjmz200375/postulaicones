@@ -12,11 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -60,17 +60,15 @@ public class PostulacionController {
     }
 
     @Operation(
-        summary = "Listar postulaciones",
-        description = "Retorna todas las postulaciones ordenadas por fecha de creación descendente. " +
-            "Parámetros opcionales: estado (PENDIENTE|APROBADA|RECHAZADA), " +
-            "tipo (ESTUDIANTE|PROFESOR|ADMINISTRATIVO), texto (busca en nombres, apellidos y nroDoc). " +
-            "Se pueden combinar: ?estado=PENDIENTE&tipo=ESTUDIANTE"
+        summary = "Listar postulaciones paginadas",
+        description = "Retorna postulaciones paginadas. Parámetros: page (desde 0), size (default 20), " +
+            "estado (PENDIENTE|APROBADA|RECHAZADA), tipo (ESTUDIANTE|PROFESOR|ADMINISTRATIVO), texto (búsqueda)"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista de postulaciones",
+        @ApiResponse(responseCode = "200", description = "Página de postulaciones",
             content = @Content(mediaType = "application/json",
-                examples = @ExampleObject(value = "[{\"id\":1,\"nombres\":\"JUAN CARLOS\",\"apellidos\":\"PEREZ GOMEZ\",\"tipoDoc\":\"CC\",\"nroDoc\":\"1065000100\",\"email\":\"juan@correo.com\",\"tipoPostulacion\":\"ESTUDIANTE\",\"estado\":\"PENDIENTE\",\"tercId\":null,\"fechaCreacion\":\"2026-01-15T10:30:00\"}]"))),
-        @ApiResponse(responseCode = "400", description = "Valor de filtro inválido (estado o tipo desconocido)",
+                examples = @ExampleObject(value = "{\"content\":[{\"id\":1,\"nombres\":\"JUAN CARLOS\",\"estado\":\"PENDIENTE\"}],\"totalElements\":1,\"totalPages\":1,\"number\":0,\"first\":true,\"last\":true}"))),
+        @ApiResponse(responseCode = "400", description = "Valor de filtro inválido",
             content = @Content(mediaType = "application/json",
                 examples = @ExampleObject(value = "{\"error\":true,\"mensaje\":\"Valor de filtro invalido: ...\"}"))),
         @ApiResponse(responseCode = "401", description = "API Key inválida o ausente")
@@ -79,32 +77,33 @@ public class PostulacionController {
     public ResponseEntity<?> listar(
             @RequestParam(required = false) String estado,
             @RequestParam(required = false) String tipo,
-            @RequestParam(required = false) String texto) {
+            @RequestParam(required = false) String texto,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         try {
-            List<Postulacion> resultado;
-
+            Page<?> resultado;
             if (texto != null && !texto.isBlank()) {
-                resultado = service.buscar(texto.trim());
+                resultado = service.buscarPaginado(texto.trim(), page, size);
             } else if (estado != null && tipo != null) {
-                EstadoPostulacion e = EstadoPostulacion.valueOf(estado.toUpperCase());
-                TipoPostulacion t = TipoPostulacion.valueOf(tipo.toUpperCase());
-                resultado = service.listarPorEstadoYTipo(e, t);
+                resultado = service.listarPorEstadoYTipoPaginado(
+                    EstadoPostulacion.valueOf(estado.toUpperCase()),
+                    TipoPostulacion.valueOf(tipo.toUpperCase()),
+                    page, size);
             } else if (estado != null) {
-                EstadoPostulacion e = EstadoPostulacion.valueOf(estado.toUpperCase());
-                resultado = service.listarPorEstado(e);
+                resultado = service.listarPorEstadoPaginado(
+                    EstadoPostulacion.valueOf(estado.toUpperCase()), page, size);
             } else if (tipo != null) {
-                TipoPostulacion t = TipoPostulacion.valueOf(tipo.toUpperCase());
-                resultado = service.listarPorTipo(t);
+                resultado = service.listarPorTipoPaginado(
+                    TipoPostulacion.valueOf(tipo.toUpperCase()), page, size);
             } else {
-                resultado = service.listar();
+                resultado = service.listarPaginado(page, size);
             }
-
             return ResponseEntity.ok(resultado);
         } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.badRequest()
                 .body(Map.of("error", true, "mensaje", "Valor de filtro inválido: " + ex.getMessage()));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                 .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }
@@ -156,16 +155,19 @@ public class PostulacionController {
                 examples = @ExampleObject(value = "{\"error\":true,\"mensaje\":\"Una postulacion aprobada no puede eliminarse aqui. Elimine el tercero asociado en el modulo de Terceros.\"}")))
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+    public ResponseEntity<?> eliminar(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Username", required = false) String username) {
         try {
-            service.eliminar(id);
+            service.eliminar(id, userId, username);
             return ResponseEntity.ok(Map.of("error", false, "mensaje", "Eliminado correctamente"));
         } catch (RuntimeException ex) {
             String msg = ex.getMessage() != null ? ex.getMessage() : "Error";
             HttpStatus status = msg.contains("no encontrada") ? HttpStatus.NOT_FOUND : HttpStatus.CONFLICT;
             return ResponseEntity.status(status).body(Map.of("error", true, "mensaje", msg));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                 .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }
@@ -190,16 +192,19 @@ public class PostulacionController {
                 examples = @ExampleObject(value = "{\"error\":true,\"mensaje\":\"La postulacion ya esta aprobada\"}")))
     })
     @PutMapping("/{id}/aprobar")
-    public ResponseEntity<?> aprobar(@PathVariable Long id) {
+    public ResponseEntity<?> aprobar(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Username", required = false) String username) {
         try {
-            Postulacion aprobada = service.aprobar(id);
+            Postulacion aprobada = service.aprobar(id, userId, username);
             return ResponseEntity.ok(aprobada);
         } catch (RuntimeException ex) {
             String msg = ex.getMessage() != null ? ex.getMessage() : "Error";
             HttpStatus status = msg.contains("no encontrada") ? HttpStatus.NOT_FOUND : HttpStatus.CONFLICT;
             return ResponseEntity.status(status).body(Map.of("error", true, "mensaje", msg));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                 .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }
@@ -223,16 +228,19 @@ public class PostulacionController {
                 examples = @ExampleObject(value = "{\"error\":true,\"mensaje\":\"Una postulacion aprobada no puede rechazarse aqui. Elimine el tercero asociado en el modulo de Terceros.\"}")))
     })
     @PutMapping("/{id}/rechazar")
-    public ResponseEntity<?> rechazar(@PathVariable Long id) {
+    public ResponseEntity<?> rechazar(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Username", required = false) String username) {
         try {
-            Postulacion rechazada = service.rechazar(id);
+            Postulacion rechazada = service.rechazar(id, userId, username);
             return ResponseEntity.ok(rechazada);
         } catch (RuntimeException ex) {
             String msg = ex.getMessage() != null ? ex.getMessage() : "Error";
             HttpStatus status = msg.contains("no encontrada") ? HttpStatus.NOT_FOUND : HttpStatus.CONFLICT;
             return ResponseEntity.status(status).body(Map.of("error", true, "mensaje", msg));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                 .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }

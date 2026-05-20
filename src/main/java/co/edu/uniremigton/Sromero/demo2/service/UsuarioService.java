@@ -4,6 +4,8 @@ import co.edu.uniremigton.Sromero.demo2.model.Usuario;
 import co.edu.uniremigton.Sromero.demo2.repository.TerceroRepository;
 import co.edu.uniremigton.Sromero.demo2.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,10 @@ public class UsuarioService {
 
     public List<Usuario> listar() {
         return repo.findAll();
+    }
+
+    public Page<Usuario> listarPaginado(int page, int size) {
+        return repo.findAllByOrderByUserIdAsc(PageRequest.of(page, size));
     }
 
     @Transactional

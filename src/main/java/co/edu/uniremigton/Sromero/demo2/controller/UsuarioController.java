@@ -27,21 +27,23 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @Operation(
-        summary = "Listar usuarios del sistema",
-        description = "Retorna todos los usuarios registrados en el panel admin. Las contraseñas aparecen cifradas con BCrypt."
+        summary = "Listar usuarios paginados",
+        description = "Retorna usuarios paginados. Parámetros: page (desde 0), size (default 20)"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente",
+        @ApiResponse(responseCode = "200", description = "Página de usuarios",
             content = @Content(mediaType = "application/json",
-                examples = @ExampleObject(value = "[{\"userId\":1,\"userUsername\":\"admin\",\"userPassword\":\"$2a$10$...\",\"userRol\":\"ADMIN\",\"userActivo\":true,\"tercId\":null}]"))),
+                examples = @ExampleObject(value = "{\"content\":[{\"userId\":1,\"userUsername\":\"admin\",\"userRol\":\"ADMIN\",\"userActivo\":true}],\"totalElements\":1,\"totalPages\":1,\"number\":0,\"first\":true,\"last\":true}"))),
         @ApiResponse(responseCode = "401", description = "API Key inválida o ausente")
     })
     @GetMapping
-    public ResponseEntity<?> listar() {
+    public ResponseEntity<?> listar(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         try {
-            return ResponseEntity.ok(service.listar());
+            return ResponseEntity.ok(service.listarPaginado(page, size));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                 .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }

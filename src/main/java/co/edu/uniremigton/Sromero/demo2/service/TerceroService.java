@@ -5,6 +5,8 @@ import co.edu.uniremigton.Sromero.demo2.model.Tercero;
 import co.edu.uniremigton.Sromero.demo2.repository.PostulacionRepository;
 import co.edu.uniremigton.Sromero.demo2.repository.TerceroRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ public class TerceroService {
 
     private final TerceroRepository repo;
     private final PostulacionRepository postulacionRepo;
+    private final HistorialService historialService;
 
     public List<Tercero> listar()                      { return repo.findAll(); }
     public List<Tercero> buscar(String nombre)          { return repo.buscar(nombre); }
@@ -24,6 +27,18 @@ public class TerceroService {
 
     public List<Tercero> listarPorTipo(String tipo) {
         return repo.findByTercTipoOrderByTercApellidosAsc(tipo);
+    }
+
+    public Page<Tercero> listarPaginado(int page, int size) {
+        return repo.findAllByOrderByTercApellidosAsc(PageRequest.of(page, size));
+    }
+
+    public Page<Tercero> listarPorTipoPaginado(String tipo, int page, int size) {
+        return repo.findByTercTipoOrderByTercApellidosAsc(tipo, PageRequest.of(page, size));
+    }
+
+    public Page<Tercero> buscarPaginado(String nombre, int page, int size) {
+        return repo.buscarPaginado(nombre, PageRequest.of(page, size));
     }
 
     @Transactional
@@ -43,15 +58,28 @@ public class TerceroService {
     }
 
     @Transactional
-    public void eliminar(Long id) {
-        if (!repo.existsById(id)) {
-            throw new RuntimeException("Tercero no encontrado: " + id);
-        }
+    public void eliminar(Long id, Long userId, String username) {
+        Tercero t = repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Tercero no encontrado: " + id));
+
+        String descripcion = t.getTercNombres() + " " + t.getTercApellidos() +
+                             " (" + t.getTercTipoDoc() + " " + t.getTercNroDoc() + ")";
+
+        historialService.registrar("TERCERO", id, descripcion,
+            null, null, "TERCERO_ELIMINADO", userId, username);
+
         postulacionRepo.findByTercId(id).ifPresent(p -> {
+            String estadoAnterior = p.getEstado().name();
             p.setEstado(EstadoPostulacion.PENDIENTE);
             p.setTercId(null);
             postulacionRepo.save(p);
+
+            String descPost = p.getNombres() + " " + p.getApellidos() +
+                              " (" + p.getTipoDoc() + " " + p.getNroDoc() + ")";
+            historialService.registrar("POSTULACION", p.getId(), descPost,
+                estadoAnterior, "PENDIENTE", "POSTULACION_RESETEADA", userId, username);
         });
+
         repo.deleteById(id);
     }
 }

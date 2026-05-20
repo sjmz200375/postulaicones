@@ -10,11 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,35 +28,36 @@ public class TerceroController {
     private final TerceroService service;
 
     @Operation(
-        summary = "Listar terceros",
-        description = "Retorna todos los terceros registrados en el sistema (personas aprobadas). " +
-            "Filtra por tipo con ?tipo=0 (Estudiante), 1 (Profesor), 2 (Administrativo). " +
-            "Busca por nombre, apellido o número de documento con ?nombre=texto."
+        summary = "Listar terceros paginados",
+        description = "Retorna terceros paginados. Parámetros: page (desde 0), size (default 20), " +
+            "tipo (0=Estudiante, 1=Profesor, 2=Administrativo), nombre (búsqueda)"
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente",
+        @ApiResponse(responseCode = "200", description = "Página de terceros",
             content = @Content(mediaType = "application/json",
-                examples = @ExampleObject(value = "[{\"tercId\":201,\"tercTipoDoc\":\"CC\",\"tercNroDoc\":\"1065000100\",\"tercNombres\":\"JUAN CARLOS\",\"tercApellidos\":\"PEREZ GOMEZ\",\"tercDireccion\":null,\"tercTelefono\":\"3001234567\",\"tercMovil\":null,\"tercTipo\":\"0\",\"tercEmail\":\"juan@correo.com\"}]"))),
+                examples = @ExampleObject(value = "{\"content\":[{\"tercId\":201,\"tercNombres\":\"JUAN CARLOS\",\"tercApellidos\":\"PEREZ GOMEZ\",\"tercTipo\":\"0\"}],\"totalElements\":1,\"totalPages\":1,\"number\":0,\"first\":true,\"last\":true}"))),
         @ApiResponse(responseCode = "401", description = "API Key inválida o ausente"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping
     public ResponseEntity<?> listar(
             @Parameter(description = "Nombre, apellido o número de documento a buscar") @RequestParam(required = false) String nombre,
-            @Parameter(description = "Tipo: 0=Estudiante, 1=Profesor, 2=Administrativo") @RequestParam(required = false) String tipo) {
+            @Parameter(description = "Tipo: 0=Estudiante, 1=Profesor, 2=Administrativo") @RequestParam(required = false) String tipo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
         try {
-            List<Tercero> resultado;
-            if (tipo != null) {
-                resultado = service.listarPorTipo(tipo);
-            } else if (nombre != null && !nombre.isBlank()) {
-                resultado = service.buscar(nombre);
+            Page<?> resultado;
+            if (nombre != null && !nombre.isBlank()) {
+                resultado = service.buscarPaginado(nombre, page, size);
+            } else if (tipo != null) {
+                resultado = service.listarPorTipoPaginado(tipo, page, size);
             } else {
-                resultado = service.listar();
+                resultado = service.listarPaginado(page, size);
             }
             return ResponseEntity.ok(resultado);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", true, "mensaje", ex.getMessage() != null ? ex.getMessage() : "Error"));
+            return ResponseEntity.internalServerError()
+                .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }
 
@@ -136,16 +137,18 @@ public class TerceroController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(
-            @Parameter(description = "ID del tercero a eliminar") @PathVariable Long id) {
+            @Parameter(description = "ID del tercero a eliminar") @PathVariable Long id,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Username", required = false) String username) {
         try {
-            service.eliminar(id);
+            service.eliminar(id, userId, username);
             return ResponseEntity.ok(Map.of("error", false, "mensaje", "Eliminado correctamente"));
         } catch (RuntimeException ex) {
             String msg = ex.getMessage() != null ? ex.getMessage() : "Error";
             HttpStatus status = msg.contains("no encontrado") ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
             return ResponseEntity.status(status).body(Map.of("error", true, "mensaje", msg));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.internalServerError()
                 .body(Map.of("error", true, "mensaje", "Error interno del servidor"));
         }
     }

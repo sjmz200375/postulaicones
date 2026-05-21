@@ -22,7 +22,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/postulaciones")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Postulaciones", description = "Gestión de postulaciones institucionales. POST /api/postulaciones es público. Los demás endpoints requieren X-API-Key.")
 public class PostulacionController {

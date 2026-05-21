@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ubicaciones")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Ubicaciones", description = "Departamentos y municipios de Colombia")
 public class UbicacionController {

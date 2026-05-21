@@ -28,6 +28,11 @@ public class ApiKeyFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        response.setHeader("X-Content-Type-Options", "nosniff");
+        response.setHeader("X-Frame-Options", "DENY");
+        response.setHeader("X-XSS-Protection", "1; mode=block");
+        response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+
         String path = request.getRequestURI();
         String method = request.getMethod();
 

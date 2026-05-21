@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/historial")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Historial", description = "Registro de cambios de estado de postulaciones y terceros. Requiere X-API-Key.")
 public class HistorialController {

@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/catalogos")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Catálogos", description = "Gestión de Programas Académicos, Áreas/Departamentos y Cargos")
 public class CatalogoController {

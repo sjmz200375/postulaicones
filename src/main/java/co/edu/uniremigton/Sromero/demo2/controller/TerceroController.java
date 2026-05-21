@@ -20,7 +20,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/terceros")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Terceros", description = "Gestión de personas aprobadas dentro del sistema. Los Terceros se crean automáticamente al aprobar una postulación. Todos los endpoints requieren X-API-Key.")
 public class TerceroController {

@@ -19,7 +19,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Usuarios", description = "Gestión de cuentas de acceso al sistema. Las contraseñas se almacenan cifradas con BCrypt. POST /login es público.")
 public class UsuarioController {

@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dashboard")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Dashboard", description = "Estadísticas generales del sistema de postulaciones. Requiere X-API-Key.")
 public class DashboardController {

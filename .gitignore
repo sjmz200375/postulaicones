@@ -46,3 +46,6 @@ logs/
 # Spring Boot JARs
 *.jar
 !.mvn/wrapper/maven-wrapper.jar
+
+# Claude Code
+.claude/

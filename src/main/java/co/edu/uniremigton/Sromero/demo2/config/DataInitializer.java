@@ -2,10 +2,13 @@ package co.edu.uniremigton.Sromero.demo2.config;
 
 import co.edu.uniremigton.Sromero.demo2.model.Departamento;
 import co.edu.uniremigton.Sromero.demo2.model.Municipio;
+import co.edu.uniremigton.Sromero.demo2.model.Usuario;
 import co.edu.uniremigton.Sromero.demo2.repository.DepartamentoRepository;
 import co.edu.uniremigton.Sromero.demo2.repository.MunicipioRepository;
+import co.edu.uniremigton.Sromero.demo2.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +19,20 @@ public class DataInitializer implements CommandLineRunner {
 
     private final DepartamentoRepository departamentoRepo;
     private final MunicipioRepository municipioRepo;
+    private final UsuarioRepository usuarioRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
+        if (usuarioRepo.count() == 0) {
+            Usuario admin = new Usuario();
+            admin.setUserUsername("admin");
+            admin.setUserPassword(passwordEncoder.encode("admin123"));
+            admin.setUserRol("ADMIN");
+            admin.setUserActivo(true);
+            usuarioRepo.save(admin);
+        }
+
         if (departamentoRepo.count() > 0) return;
 
         Departamento cordoba = new Departamento();

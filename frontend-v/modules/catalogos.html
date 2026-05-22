@@ -1,0 +1,100 @@
+<section class="module" id="module-catalogos">
+    <div class="topbar">
+        <div>
+            <h1>Catálogos</h1>
+            <p>Gestión de programas académicos, áreas y cargos</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="programas">
+                    🎓 Programas Académicos
+                </button>
+                <button class="tab-btn" data-tab="areas">
+                    📚 Áreas / Departamentos
+                </button>
+                <button class="tab-btn" data-tab="cargos">
+                    🏢 Cargos
+                </button>
+            </div>
+
+            <div class="tab-content active" id="tab-programas">
+                <div class="catalogo-header">
+                    <h3>Programas Académicos</h3>
+                    <button class="btn btn-dark btn-sm" id="btn-nuevo-programa">
+                        + Nuevo programa
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-programas">
+                            <tr><td colspan="5" class="table-empty">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-areas">
+                <div class="catalogo-header">
+                    <h3>Áreas / Departamentos</h3>
+                    <button class="btn btn-dark btn-sm" id="btn-nueva-area">
+                        + Nueva área
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-areas">
+                            <tr><td colspan="5" class="table-empty">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-cargos">
+                <div class="catalogo-header">
+                    <h3>Cargos</h3>
+                    <button class="btn btn-dark btn-sm" id="btn-nuevo-cargo">
+                        + Nuevo cargo
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-cargos">
+                            <tr><td colspan="5" class="table-empty">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,55 @@
+<section class="module" id="module-terceros">
+    <div class="topbar">
+        <div>
+            <h1>Terceros</h1>
+            <p>Personas aprobadas dentro del sistema</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>Lista de terceros</h2>
+        </div>
+        <div class="card-body">
+            <div class="filters">
+                <select id="filtro-tipo-terc">
+                    <option value="">Todos los tipos</option>
+                    <option value="0">Estudiante</option>
+                    <option value="1">Profesor</option>
+                    <option value="2">Administrativo</option>
+                </select>
+                <input type="text" id="filtro-nombre-terc"
+                       placeholder="Buscar por nombre o documento..."
+                       style="min-width:220px">
+                <button class="btn btn-outline btn-sm" id="btn-buscar-terc">Buscar</button>
+                <button class="btn btn-outline btn-sm" id="btn-limpiar-terc">Limpiar</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="tabla-terceros">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre completo</th>
+                            <th>Documento</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Tipo</th>
+                            <th>Ubicación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-terceros">
+                        <tr><td colspan="8" class="table-empty">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination-terceros">
+                <span class="pagination-info" id="info-terceros">—</span>
+                <div class="pagination-controls">
+                    <button id="btn-prev-terc" disabled>◄ Anterior</button>
+                    <span class="pagination-page" id="page-terc">Página 1 de 1</span>
+                    <button id="btn-next-terc" disabled>Siguiente ►</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

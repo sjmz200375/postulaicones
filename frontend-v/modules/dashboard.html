@@ -1,0 +1,53 @@
+<section class="module active" id="module-dashboard">
+    <div class="topbar">
+        <div>
+            <h1>Dashboard</h1>
+            <p>Resumen general de postulaciones</p>
+        </div>
+        <button class="btn btn-outline" id="btn-refresh-stats">↻ Actualizar</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total postulaciones</div>
+            <div class="stat-value" id="stat-total">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pendientes</div>
+            <div class="stat-value" id="stat-pendientes" style="color:#ca8a04">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Aprobadas</div>
+            <div class="stat-value" id="stat-aprobadas" style="color:#16a34a">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Rechazadas</div>
+            <div class="stat-value" id="stat-rechazadas" style="color:#dc2626">—</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Postulaciones por tipo</h2>
+        </div>
+        <div class="card-body">
+            <div class="stats-tipo-grid">
+                <div class="stat-tipo-card">
+                    <div class="tipo-icon">🎓</div>
+                    <div class="tipo-value" id="stat-estudiantes">—</div>
+                    <div class="tipo-label">Estudiantes</div>
+                </div>
+                <div class="stat-tipo-card">
+                    <div class="tipo-icon">📚</div>
+                    <div class="tipo-value" id="stat-profesores">—</div>
+                    <div class="tipo-label">Profesores</div>
+                </div>
+                <div class="stat-tipo-card">
+                    <div class="tipo-icon">🏢</div>
+                    <div class="tipo-value" id="stat-administrativos">—</div>
+                    <div class="tipo-label">Administrativos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

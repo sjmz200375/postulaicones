@@ -1,0 +1,60 @@
+<section class="module" id="module-postulaciones">
+    <div class="topbar">
+        <div>
+            <h1>Postulaciones</h1>
+            <p>Gestiona las postulaciones recibidas</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>Lista de postulaciones</h2>
+        </div>
+        <div class="card-body">
+            <div class="filters">
+                <select id="filtro-estado">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">Pendiente</option>
+                    <option value="APROBADA">Aprobada</option>
+                    <option value="RECHAZADA">Rechazada</option>
+                </select>
+                <select id="filtro-tipo-post">
+                    <option value="">Todos los tipos</option>
+                    <option value="ESTUDIANTE">Estudiante</option>
+                    <option value="PROFESOR">Profesor</option>
+                    <option value="ADMINISTRATIVO">Administrativo</option>
+                </select>
+                <input type="text" id="filtro-texto-post"
+                       placeholder="Buscar por nombre o documento..."
+                       style="min-width:220px">
+                <button class="btn btn-outline btn-sm" id="btn-buscar-post">Buscar</button>
+                <button class="btn btn-outline btn-sm" id="btn-limpiar-post">Limpiar</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="tabla-postulaciones">
+                    <thead>
+                        <tr>
+                            <th>Nombre completo</th>
+                            <th>Documento</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-postulaciones">
+                        <tr><td colspan="7" class="table-empty">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination-postulaciones">
+                <span class="pagination-info" id="info-postulaciones">—</span>
+                <div class="pagination-controls">
+                    <button id="btn-prev-post" disabled>◄ Anterior</button>
+                    <span class="pagination-page" id="page-post">Página 1 de 1</span>
+                    <button id="btn-next-post" disabled>Siguiente ►</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self';
+                   style-src 'self' 'unsafe-inline';
+                   connect-src 'self' http://localhost:8080 https:;
+                   img-src 'self' data:;
+                   font-src 'self';">
+    <title>Sistema de Postulaciones</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <span class="navbar-brand">Sistema de <span>Postulaciones</span></span>
+    <button class="btn btn-dark" id="btn-ingresar">Ingresar</button>
+</nav>
+
+<section class="hero">
+    <h1>Postúlate a nuestra institución</h1>
+    <p>Selecciona el tipo de postulación que deseas realizar. El proceso es rápido y completamente en línea.</p>
+</section>
+
+<div class="cards-grid">
+    <div class="post-card" data-tipo="ESTUDIANTE">
+        <span class="card-icon">🎓</span>
+        <h3>Estudiante</h3>
+        <p>Ingresa a nuestros programas académicos y construye tu futuro profesional.</p>
+        <button class="btn btn-dark">Postularme</button>
+    </div>
+    <div class="post-card" data-tipo="PROFESOR">
+        <span class="card-icon">📚</span>
+        <h3>Profesor</h3>
+        <p>Comparte tu conocimiento y forma parte de nuestro equipo docente.</p>
+        <button class="btn btn-dark">Postularme</button>
+    </div>
+    <div class="post-card" data-tipo="ADMINISTRATIVO">
+        <span class="card-icon">🏢</span>
+        <h3>Administrativo</h3>
+        <p>Contribuye a la gestión y operación de nuestra institución.</p>
+        <button class="btn btn-dark">Postularme</button>
+    </div>
+</div>
+
+<footer class="footer-pub">
+    © 2026 Sistema de Postulaciones — Todos los derechos reservados
+</footer>
+
+<div class="modal-overlay" id="modal-login">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Acceso al sistema</h3>
+            <button class="modal-close" data-close="modal-login">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="login-username">Usuario</label>
+                <input type="text" id="login-username" class="form-control"
+                       placeholder="Ingresa tu usuario" autocomplete="username">
+                <span class="form-error" id="err-username">El usuario es requerido</span>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Contraseña</label>
+                <input type="password" id="login-password" class="form-control"
+                       placeholder="Ingresa tu contraseña" autocomplete="current-password">
+                <span class="form-error" id="err-password">La contraseña es requerida</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" data-close="modal-login">Cancelar</button>
+            <button class="btn btn-dark" id="btn-login">Iniciar sesión</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-postulacion">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modal-post-titulo">Formulario de postulación</h3>
+            <button class="modal-close" data-close="modal-postulacion">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="post-tipo">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="post-tipo-doc">Tipo de documento *</label>
+                    <select id="post-tipo-doc" class="form-control">
+                        <option value="">Seleccionar...</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="PA">Pasaporte</option>
+                    </select>
+                    <span class="form-error" id="err-tipo-doc">Selecciona el tipo de documento</span>
+                </div>
+                <div class="form-group">
+                    <label for="post-nro-doc">Número de documento *</label>
+                    <input type="text" id="post-nro-doc" class="form-control"
+                           placeholder="Ej: 1065000100">
+                    <span class="form-error" id="err-nro-doc">El número de documento es requerido</span>
+                </div>
+            </div>
+
+            <div class="selector-catalogo" id="contenedor-selector-catalogo">
+                <label id="label-selector-catalogo">Selecciona una opción *</label>
+                <select id="selector-catalogo" class="form-control">
+                    <option value="">Cargando opciones...</option>
+                </select>
+                <span class="form-error" id="err-selector-catalogo">
+                    Debes seleccionar una opción
+                </span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="post-nombres">Nombres *</label>
+                    <input type="text" id="post-nombres" class="form-control"
+                           placeholder="Ej: Juan Carlos">
+                    <span class="form-error" id="err-nombres">Los nombres son requeridos</span>
+                </div>
+                <div class="form-group">
+                    <label for="post-apellidos">Apellidos *</label>
+                    <input type="text" id="post-apellidos" class="form-control"
+                           placeholder="Ej: Pérez Gómez">
+                    <span class="form-error" id="err-apellidos">Los apellidos son requeridos</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="post-email">Correo electrónico *</label>
+                    <input type="email" id="post-email" class="form-control"
+                           placeholder="correo@ejemplo.com">
+                    <span class="form-error" id="err-email">Ingresa un email válido</span>
+                </div>
+                <div class="form-group">
+                    <label for="post-telefono">Teléfono</label>
+                    <input type="text" id="post-telefono" class="form-control"
+                           placeholder="Ej: 3001234567">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="post-comentarios">Comentarios</label>
+                <textarea id="post-comentarios" class="form-control"
+                          rows="3" placeholder="Cuéntanos brevemente por qué deseas postularte..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" data-close="modal-postulacion">Cancelar</button>
+            <button class="btn btn-dark" id="btn-postular">Enviar postulación</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/index.js"></script>
+
+</body>
+</html>

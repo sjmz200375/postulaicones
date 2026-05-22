@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self';
+                   style-src 'self' 'unsafe-inline';
+                   connect-src 'self' http://localhost:8080 https:;
+                   img-src 'self' data:;
+                   font-src 'self';">
+    <title>Panel Admin — Sistema de Postulaciones</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar-container"></aside>
+
+<main class="main-content" id="main-content"></main>
+
+
+<div class="modal-overlay" id="modal-detalle-post">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Detalle de postulación</h3>
+            <button class="modal-close" data-close="modal-detalle-post">&times;</button>
+        </div>
+        <div class="modal-body" id="detalle-post-body"></div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" data-close="modal-detalle-post">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-editar-terc">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Editar tercero</h3>
+            <button class="modal-close" data-close="modal-editar-terc">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-terc-id">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombres *</label>
+                    <input type="text" id="edit-terc-nombres" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Apellidos *</label>
+                    <input type="text" id="edit-terc-apellidos" class="form-control">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Tipo documento</label>
+                    <select id="edit-terc-tipo-doc" class="form-control">
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="PA">Pasaporte</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Número de documento</label>
+                    <input type="text" id="edit-terc-nro-doc" class="form-control">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="edit-terc-email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="edit-terc-telefono" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Dirección</label>
+                <input type="text" id="edit-terc-direccion" class="form-control">
+            </div>
+            <div class="ubicacion-grid">
+                <div class="form-group">
+                    <label>Departamento</label>
+                    <select id="edit-terc-departamento" class="form-control">
+                        <option value="">Seleccionar departamento...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Municipio</label>
+                    <select id="edit-terc-municipio" class="form-control" disabled>
+                        <option value="">Primero selecciona departamento</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" data-close="modal-editar-terc">Cancelar</button>
+            <button class="btn btn-dark" id="btn-guardar-terc">Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-usuario">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modal-usuario-titulo">Nuevo usuario</h3>
+            <button class="modal-close" data-close="modal-usuario">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-user-id">
+            <div class="form-group">
+                <label>Username *</label>
+                <input type="text" id="edit-user-username" class="form-control"
+                       placeholder="Ej: coordinador1">
+                <span class="form-error" id="err-user-username">El username es requerido</span>
+            </div>
+            <div class="form-group">
+                <label id="label-password">Contraseña *</label>
+                <input type="password" id="edit-user-password" class="form-control"
+                       placeholder="Mínimo 6 caracteres">
+                <span class="form-error" id="err-user-password">La contraseña es requerida</span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select id="edit-user-rol" class="form-control">
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="COORDINADOR">COORDINADOR</option>
+                        <option value="SECRETARIA">SECRETARIA</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="edit-user-activo" class="form-control">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" data-close="modal-usuario">Cancelar</button>
+            <button class="btn btn-dark" id="btn-guardar-usuario">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-catalogo">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modal-catalogo-titulo">Nuevo elemento</h3>
+            <button class="modal-close" data-close="modal-catalogo">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="catalogo-id">
+            <input type="hidden" id="catalogo-tipo">
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" id="catalogo-nombre" class="form-control"
+                       placeholder="Nombre del elemento" maxlength="150">
+                <span class="form-error" id="err-catalogo-nombre">
+                    El nombre es obligatorio
+                </span>
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="catalogo-descripcion" class="form-control"
+                          rows="3" placeholder="Descripción opcional"
+                          maxlength="300"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Estado</label>
+                <select id="catalogo-activo" class="form-control">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" data-close="modal-catalogo">Cancelar</button>
+            <button class="btn btn-dark" id="btn-guardar-catalogo">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/toasts.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

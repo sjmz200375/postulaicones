@@ -1,0 +1,55 @@
+<section class="module" id="module-historial">
+    <div class="topbar">
+        <div>
+            <h1>Historial</h1>
+            <p>Registro de todos los cambios de estado del sistema</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>Registro de cambios</h2>
+        </div>
+        <div class="card-body">
+            <div class="filters">
+                <select id="filtro-tipo-hist">
+                    <option value="">Todos los tipos</option>
+                    <option value="POSTULACION">Postulación</option>
+                    <option value="TERCERO">Tercero</option>
+                </select>
+                <input type="text" id="filtro-username-hist"
+                       placeholder="Filtrar por usuario..."
+                       style="min-width:180px">
+                <input type="date" id="filtro-desde-hist">
+                <input type="date" id="filtro-hasta-hist">
+                <button class="btn btn-outline btn-sm" id="btn-buscar-hist">Buscar</button>
+                <button class="btn btn-outline btn-sm" id="btn-limpiar-hist">Limpiar</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="tabla-historial">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Acción</th>
+                            <th>Estado anterior</th>
+                            <th>Estado nuevo</th>
+                            <th>Realizado por</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-historial">
+                        <tr><td colspan="7" class="table-empty">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination-historial">
+                <span class="pagination-info" id="info-historial">—</span>
+                <div class="pagination-controls">
+                    <button id="btn-prev-hist" disabled>◄ Anterior</button>
+                    <span class="pagination-page" id="page-hist">Página 1 de 1</span>
+                    <button id="btn-next-hist" disabled>Siguiente ►</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

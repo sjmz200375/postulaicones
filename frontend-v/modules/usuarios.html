@@ -1,0 +1,40 @@
+<section class="module" id="module-usuarios">
+    <div class="topbar">
+        <div>
+            <h1>Usuarios</h1>
+            <p>Cuentas de acceso al panel administrativo</p>
+        </div>
+        <button class="btn btn-dark" id="btn-nuevo-usuario">+ Nuevo usuario</button>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>Lista de usuarios</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-wrapper">
+                <table id="tabla-usuarios">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-usuarios">
+                        <tr><td colspan="5" class="table-empty">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination-usuarios">
+                <span class="pagination-info" id="info-usuarios">—</span>
+                <div class="pagination-controls">
+                    <button id="btn-prev-user" disabled>◄ Anterior</button>
+                    <span class="pagination-page" id="page-user">Página 1 de 1</span>
+                    <button id="btn-next-user" disabled>Siguiente ►</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

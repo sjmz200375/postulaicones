@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (usuarioRepo.count() == 0) {
+        if (usuarioRepo.findByUserUsername("admin").isEmpty()) {
             Usuario admin = new Usuario();
             admin.setUserUsername("admin");
             admin.setUserPassword(passwordEncoder.encode("admin123"));

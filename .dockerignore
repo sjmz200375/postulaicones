@@ -1,0 +1,9 @@
+.git
+.github
+.claude
+.vscode
+target/
+*.log
+.env
+.env.local
+HELP.md

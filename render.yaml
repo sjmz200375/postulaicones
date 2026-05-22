@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: postulaicones
+    env: docker
+    plan: free
+    healthCheckPath: /index.html
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DB_HOST
+        fromDatabase:
+          name: postulaicones-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: postulaicones-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: postulaicones-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: postulaicones-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: postulaicones-db
+          property: password
+      - key: APP_API_KEY
+        value: postulaciones-2026-secret-key
+      - key: FRONTEND_URL
+        value: https://postulaicones.onrender.com
+
+databases:
+  - name: postulaicones-db
+    plan: free
+    databaseName: db_demo
+    user: santiago_db
